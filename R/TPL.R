@@ -1,5 +1,5 @@
 TPL <-
-function(splist, id=NULL, genus=NULL, species=NULL, infrasp=NULL, infra=TRUE, abbrev=TRUE, corr=TRUE, diffchar=2, max.distance=1, version="1.1", encoding="UTF-8", file="") {
+function(splist, id=NULL, author = '', genus=NULL, species=NULL, infrasp=NULL, infra=TRUE, abbrev=TRUE, corr=TRUE, diffchar=2, max.distance=1, version="1.1", encoding="UTF-8", file="") {
 splist2 <- NULL
 try(splist2 <- splist, silent=TRUE)
 if(!is.null(splist2) && (!is.null(genus) || !is.null(species) || !is.null(infrasp))) {
@@ -42,9 +42,11 @@ splist <- paste(genus, species)
 TPLck2 <- function(d) {
   sp <- strsplit(d, ":")[[1]][1]
   id <- strsplit(d, ":")[[1]][2]
-TPLck(sp=sp, corr=corr, diffchar=diffchar, max.distance=max.distance, infra=infra, abbrev=abbrev, version=version, encoding=encoding, id = id)
+  author <- ifelse(strsplit(d, ":")[[1]][3] %in% c('NA','NULL'), NA,
+                   strsplit(d, ":")[[1]][3])
+  TPLck(sp=sp, corr=corr, diffchar=diffchar, max.distance=max.distance, infra=infra, abbrev=abbrev, version=version, encoding=encoding, id = id, author = author)
 }
-results <- do.call("rbind", lapply(paste(splist, id, sep=":"), TPLck2))
+results <- do.call("rbind", lapply(paste(splist, id, author, sep=":"), TPLck2))
 #results$Infraspecific <- ifelse(results$Infraspecific=="NA", "", as.character(results$Infraspecific))
 #results <- data.frame(results[,1:2], Abbrev=as.character(abbr), results[,-c(1:2)])
 if(infra==FALSE) {

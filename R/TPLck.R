@@ -1,4 +1,4 @@
-TPLck <- function(sp, id=NULL, corr=TRUE, diffchar=2, max.distance=1, infra=TRUE, abbrev=TRUE, version="1.1", encoding="UTF-8") {
+TPLck <- function(sp, id=NULL, author='', corr=TRUE, diffchar=2, max.distance=1, infra=TRUE, abbrev=TRUE, version="1.1", encoding="UTF-8") {
 
   ## Format Species Name ##
 
@@ -302,6 +302,17 @@ if (length(unique(paste(table.sp$Genus, table.sp$Species))) == 1) {
 
 grep1 <- grep(infrasp, table.sp$Infraspecific.epithet, value=TRUE)
 ngrep <- nchar(grep1)
+
+## If Possible, Match By Author ##
+
+if(!author %in% c(NA, NULL, '')){
+  if(author %in% table.sp$Authorship){
+    table.sp <- table.sp[table.sp$Authorship==author,]
+  } else if (any(agrepl(author, table.sp$Authorship))){
+    #Fuzzy match by author
+    table.sp <- table.sp[agrep(author, table.sp$Authorship),]
+  }
+}
 
 ## If no Appropriate Infrasp Match, Fuzzy Match Infra Names ##
 
